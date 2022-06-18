@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "DirTimer.h"
 #include "Macros.h"
+#include "ImguiManager.h"
 
 class App
 {
@@ -13,6 +14,7 @@ public:
 private:
 	void DoFrame();
 private:
+	ImguiManager imgui;
 	Window wnd;
 	DirTimer timer;
 	std::vector<std::unique_ptr<class Drawable>> drawables;

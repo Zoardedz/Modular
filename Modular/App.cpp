@@ -1,12 +1,20 @@
 #include "App.h"
 #include "LuaEmbed.h"
-#include "Box.h"
+#include "SkinnedBox.h"
 #include <memory>
 #include "Sprite.h"
 #include "DirectMath.h"
 #include <algorithm>
 #include "Melon.h"
 #include "Pyramid.h"
+#include "Surface.h"
+#include "Sheet.h"
+#include "GDIPlusManager.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
+
+GDIPlusManager gdipm;
 
 App::App()
 	:
@@ -29,14 +37,18 @@ App::App()
 					odist, rdist
 					);
 			case 1:
-				return std::make_unique<Box>(
+				return std::make_unique<SkinnedBox>(
 					gfx, rng, adist, ddist,
-					odist, rdist, bdist
-					);
+					odist, rdist);
 			case 2:
 				return std::make_unique<Melon>(
 					gfx, rng, adist, ddist,
 					odist, rdist, longdist, latdist
+					);
+			case 3:
+				return std::make_unique<Sheet>(
+					gfx, rng, adist, ddist,
+					odist, rdist
 					);
 			default:
 				assert(false && "bad drawable type in factory");
@@ -53,7 +65,7 @@ App::App()
 		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
 		std::uniform_int_distribution<int> latdist{ 5,20 };
 		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,2 };
+		std::uniform_int_distribution<int> typedist{ 0,3 };
 	};
 
 	Factory f(wnd.Gfx());
@@ -70,14 +82,27 @@ void App::DoFrame()
 	wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
 	for (auto& d : drawables)
 	{
-		d->Update(dt);
+		d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		d->Draw(wnd.Gfx());
 	}
+	//imgui stuff
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	static bool show_demo_window = true;
+	if (show_demo_window)
+	{
+		ImGui::ShowDemoWindow(&show_demo_window);
+	}
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	/*for (auto& s : sprites)
 	{
 		s->Update(dt);
 		s->DrawDefault(wnd.Gfx());
 	}*/
+	//present
 	wnd.Gfx().EndFrame();
 }
 

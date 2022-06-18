@@ -1,19 +1,18 @@
-struct VS_INPUT
+cbuffer CBuf
 {
-    float3 inPos : POSITION;
-    float2 inTexCoord : TEXCOORD;
+    matrix transform;
 };
 
-struct VS_OUTPUT
+struct VSOut
 {
-	float4 outPosition : SV_POSITION;
-	float2 outTexCoord : TEXCOORD;
+    float2 tex : TexCoord;
+    float4 pos : SV_Position;
 };
 
-VS_OUTPUT main(VS_INPUT input)
+VSOut main(float3 pos : Position, float2 tex : TexCoord)
 {
-	VS_OUTPUT output;
-	output.outPosition = float4(input.inPos, 1.0f);
-	output.outTexCoord = input.inTexCoord;
-	return output;
+    VSOut vso;
+    vso.pos = mul(float4(pos, 1.0f), transform);
+    vso.tex = tex;
+    return vso;
 }

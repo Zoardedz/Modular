@@ -5,6 +5,7 @@
 #include <cmath>
 #include "GraphicsThrowMacros.h"
 #include <WICTextureLoader.h>
+#include "imgui/imgui_impl_dx11.h"
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
@@ -114,7 +115,7 @@ Graphics::Graphics(HWND hWnd)
 	//bind depth stencil view to OM
 	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
 
-	D3D11_SAMPLER_DESC sampDesc;
+	/*D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory(&sampDesc, sizeof(sampDesc));
 	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -125,7 +126,10 @@ Graphics::Graphics(HWND hWnd)
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 	GFX_THROW_INFO(this->pDevice->CreateSamplerState(&sampDesc, this->pSamplerState2D.GetAddressOf())); //Create sampler state
 	//bind sampler to context
-	this->pContext->PSSetSamplers(0, 1, this->pSamplerState2D.GetAddressOf());
+	this->pContext->PSSetSamplers(0, 1, this->pSamplerState2D.GetAddressOf());*/
+	
+	//init imgui d3d impl
+	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
 }
 
 void Graphics::EndFrame()
