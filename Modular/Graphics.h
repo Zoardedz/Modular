@@ -57,15 +57,22 @@ public:
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics() = default;
 	void EndFrame();
-	void ClearBuffer(float red, float green, float blue) noexcept;
+	void BeginFrame(float red, float green, float blue) noexcept;
 	void DrawIndexed(UINT count) noexcept(!IS_DEBUG);
 	void DrawDefault(UINT count) noexcept(!IS_DEBUG);
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> LoadTexture(std::string assetName);
 	void SetPixelShaderResource(int start, int viewCount, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> theTexture);
 	void SetProjection(DirectX::FXMMATRIX proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	void SetCamera(DirectX::FXMMATRIX cam) noexcept;
+	DirectX::XMMATRIX GetCamera() const noexcept;
+	void EnableImgui() noexcept;
+	void DisableImgui() noexcept;
+	bool IsImguiEnabled() const noexcept;
 private:
 	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX camera;
+	bool imguiEnabled = true;
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
 #endif

@@ -1,5 +1,4 @@
 #include "App.h"
-#include "LuaEmbed.h"
 #include "SkinnedBox.h"
 #include <memory>
 #include "Sprite.h"
@@ -11,10 +10,9 @@
 #include "Sheet.h"
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
-#include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_impl_dx11.h"
 
 GDIPlusManager gdipm;
+namespace dx = DirectX;
 
 App::App()
 	:
@@ -72,36 +70,32 @@ App::App()
 	drawables.reserve(nDrawables);
 	std::generate_n(std::back_inserter(drawables), nDrawables, f);
 
-	wnd.Gfx().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+	//wnd.Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 	//sprites.push_back(std::make_unique<Sprite>(100, 100, wnd.Gfx(), "Test.png"));
 }
 
 void App::DoFrame()
 {
-	auto dt = timer.Mark();
-	wnd.Gfx().ClearBuffer(0.07f, 0.0f, 0.12f);
+	auto dt = timer.Mark() * speed_factor;
+
+	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
+	wnd.Gfx().SetCamera(cam.GetMatrix());
+
 	for (auto& d : drawables)
 	{
 		d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
 		d->Draw(wnd.Gfx());
 	}
-	//imgui stuff
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 
-	static bool show_demo_window = true;
-	if (show_demo_window)
+	if (ImGui::Begin("Simulation Speed"))
 	{
-		ImGui::ShowDemoWindow(&show_demo_window);
+		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	/*for (auto& s : sprites)
-	{
-		s->Update(dt);
-		s->DrawDefault(wnd.Gfx());
-	}*/
+	ImGui::End();
+	cam.SpawnControlWindow();
+
 	//present
 	wnd.Gfx().EndFrame();
 }
@@ -112,7 +106,6 @@ App::~App()
 
 int App::Go()
 {
-	LuaEmbed::LuaEmbed();
 	while (true)
 	{
 		// process all messages pending, but to not block for new messages
