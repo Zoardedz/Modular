@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "VertexBuffer.h"
+#include "Macros.h"
 
 Sprite::Sprite(float x, float y, Graphics& gfx, std::string fileName)
 	:
@@ -20,25 +21,18 @@ Sprite::Sprite(float x, float y, Graphics& gfx, std::string fileName)
 
 	SetCount((UINT)std::size(vertices));
 
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string string_buffer = std::string(buffer).substr(0, pos);
-
-	string_buffer += "\\";
-
 	spriteTexture = gfx.LoadTexture(assetName);
 
 	AddBind(std::make_unique<VertexBuffer>(gfx, vertices));
 
-	std::string vert = string_buffer;
+	std::string vert = cwd;
 	vert += "TextureVS.cso";
 
 	auto vs = std::make_unique<VertexShader>(gfx, StringConverter::StringToWide(vert));
 	auto vsbc = vs->GetBytecode();
 	AddBind(std::move(vs));
 
-	std::string ps = string_buffer;
+	std::string ps = cwd;
 	ps += "TexturePS.cso";
 
 	AddBind(std::make_unique<PixelShader>(gfx, StringConverter::StringToWide(ps)));

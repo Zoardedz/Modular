@@ -1,4 +1,5 @@
 #include "LuaEmbed.h"
+#include "Macros.h"
 
 #define LUA_ERROR(errorMsg) throw LuaEmbed::LuaException::LuaException(__LINE__, __FILE__, errorMsg)
 
@@ -41,11 +42,6 @@ lua_State* LuaEmbed::GetVirtualMachine()
 int LuaEmbed::LoadFile(std::string fileName)
 {
 	//get cwd
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string cwd = std::string(buffer).substr(0, pos);
-	cwd += "\\";
 
 	std::ostringstream oss;
 	oss << cwd << "Assets\\Scripts\\" << fileName;
@@ -61,13 +57,6 @@ int LuaEmbed::LoadFileAndRun(std::string fileName)
 	int s = LuaEmbed::LoadFile(fileName);
 	if(s == LUA_OK)
 	{
-		//get cwd
-		char buffer[MAX_PATH];
-		GetModuleFileNameA(NULL, buffer, MAX_PATH);
-		std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-		std::string cwd = std::string(buffer).substr(0, pos);
-		cwd += "\\";
-
 		std::ostringstream oss;
 		oss << cwd << "Assets\\Scripts\\" << fileName;
 		
@@ -82,12 +71,6 @@ int LuaEmbed::LoadFileAndRun(std::string fileName)
 
 int LuaEmbed::RunFile(std::string fileName)
 {
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string cwd = std::string(buffer).substr(0, pos);
-	cwd += "\\";
-
 	std::ostringstream oss;
 	oss << cwd << "Assets\\Scripts\\" << fileName;
 
@@ -106,13 +89,6 @@ static int kpt_lua_Writer(lua_State* /*l*/, const void* p, size_t sz, void* u)
 
 int LuaEmbed::CompileFile(std::string fileName)
 {
-	//cwd
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string cwd = std::string(buffer).substr(0, pos);
-
-	cwd += "\\";
 	int status = 0;
 	FILE* outfile;
 
@@ -155,14 +131,6 @@ exit:
 
 int LuaEmbed::CompileAndRunBytecode(std::string fileName)
 {
-	//cwd
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string cwd = std::string(buffer).substr(0, pos);
-
-	cwd += "\\";
-
 	std::string cut = fileName;
 	cut = cut.substr(0, cut.find("."));
 	cut += ".lua";

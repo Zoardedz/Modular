@@ -3,6 +3,7 @@
 #include "GraphicsThrowMacros.h"
 #include "Sphere.h"
 #include "StringConverter.h"
+#include "Macros.h"
 
 Melon::Melon(Graphics& gfx,
 	std::mt19937& rng,
@@ -28,21 +29,14 @@ Melon::Melon(Graphics& gfx,
 
 	if (!IsStaticInitialized())
 	{
-		char buffer[MAX_PATH];
-		GetModuleFileNameA(NULL, buffer, MAX_PATH);
-		std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-		std::string string_buffer = std::string(buffer).substr(0, pos);
-
-		string_buffer += "\\";
-
-		std::string vert = string_buffer;
+		std::string vert = cwd;
 		vert += "ColorIndexVS.cso";
 
 		auto pvs = std::make_unique<VertexShader>(gfx,StringConverter::StringToWide(vert));
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		std::string pix = string_buffer;
+		std::string pix = cwd;
 		pix += "ColorIndexPS.cso";
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, StringConverter::StringToWide(pix)));

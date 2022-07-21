@@ -73,16 +73,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Inc;C:\Program Files (x86)\Visual Leak Detector\include\</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32\;$(ProjectDir)Libs\Any;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Inc;C:\Program Files (x86)\Visual Leak Detector\include\</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win32\;$(ProjectDir)Libs\Any;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Inc;C:\Program Files (x86)\Visual Leak Detector\include\</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(ProjectDir)Libs\Any;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Inc;C:\Program Files (x86)\Visual Leak Detector\include\</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(ProjectDir)Libs\Any;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,13 +103,13 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)LuaJIT-2.1.0-beta3x86\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>IS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)LuaJIT-2.1.0-beta3x86\src;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>luajit.lib;lua51.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Inc;$(SolutionDir)LuaJIT-2.1.0-beta3x86\src;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;assimp-vc140-mt.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Inc;$(SolutionDir)LuaJIT-2.1.0-beta3x86\src</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -114,6 +122,8 @@ del "$(OutDir)lua51.dll"
 
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3x86\src\lua51.dll" "$(ProjectDir)"
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3x86\src\lua51.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)zlib1.dll" "$(OutDir)"
 
 mkdir "$(OutDir)Assets"
 xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
@@ -131,12 +141,12 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src;$(ProjectDir)include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;assimp-vc140-mt.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
@@ -150,6 +160,8 @@ del "$(OutDir)lua51.dll"
 
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3\src\lua51.dll" "$(ProjectDir)"
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3\src\lua51.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)zlib1.dll" "$(OutDir)"
 
 mkdir "$(OutDir)Assets"
 xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
@@ -170,14 +182,14 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)LuaJIT-2.1.0-beta3x86\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)LuaJIT-2.1.0-beta3x86\src;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>luajit.lib;lua51.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Inc;$(SolutionDir)LuaJIT-2.1.0-beta3x86\src;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;assimp-vc140-mt.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Inc;$(SolutionDir)LuaJIT-2.1.0-beta3x86\src</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -194,6 +206,8 @@ del "$(OutDir)lua51.dll"
 
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3x86\src\lua51.dll" "$(ProjectDir)"
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3x86\src\lua51.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)zlib1.dll" "$(OutDir)"
 
 mkdir "$(OutDir)Assets"
 xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
@@ -214,13 +228,13 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FloatingPointModel>Fast</FloatingPointModel>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);luajit.lib;lua51.lib;assimp-vc140-mt.lib;$(ProjectDir)Libs\$(PlatformShortName)\$(Configuration)\DirectXTK.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalDependencies);$(SolutionDir)LuaJIT-2.1.0-beta3\src</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
@@ -230,6 +244,8 @@ del "$(OutDir)lua51.dll"
 
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3\src\lua51.dll" "$(ProjectDir)"
 xcopy /y "$(SolutionDir)LuaJIT-2.1.0-beta3\src\lua51.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)assimp-vc142-mt.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)zlib1.dll" "$(OutDir)"
 
 mkdir "$(OutDir)Assets"
 xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
@@ -241,6 +257,7 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="DirectException.cpp" />
     <ClCompile Include="DirTimer.cpp" />
     <ClCompile Include="Drawable.cpp" />
@@ -272,16 +289,19 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayout.cpp" />
+    <ClCompile Include="JackoTest.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LuaEmbed.cpp" />
     <ClCompile Include="Melon.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="SkinnedBox.cpp" />
-    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="StringConverter.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -299,9 +319,11 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClInclude Include="BindableBase.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ConditionalNoexcept.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectException.h" />
     <ClInclude Include="DirectMath.h" />
     <ClInclude Include="Drawable.h" />
@@ -339,13 +361,16 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="JackoTest.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="LuaEmbed.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Melon.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Prism.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="resource.h" />
@@ -353,15 +378,16 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="Sheet.h" />
     <ClInclude Include="SkinnedBox.h" />
+    <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Sprite.h" />
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Surface.h" />
+    <ClInclude Include="TestObject.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />
-    <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Win.h" />
     <ClInclude Include="Window.h" />
@@ -375,7 +401,20 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <Image Include="index.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BlendedPhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="BlendedPhongVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <None Include="Assets\Scripts\Example.lua" />
+    <None Include="Assets\Scripts\Module.lua" />
     <None Include="DXGetErrorDescription.inl" />
     <None Include="DXGetErrorString.inl" />
     <None Include="DXTrace.inl" />
@@ -423,6 +462,52 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="IndexedPhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="PhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PhongVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="SolidPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="SolidVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TexturedPhongPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="TexturedPhongVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="TextureVS.hlsl">
       <FileType>Text</FileType>

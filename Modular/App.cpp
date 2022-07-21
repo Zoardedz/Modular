@@ -1,77 +1,22 @@
 #include "App.h"
-#include "SkinnedBox.h"
-#include <memory>
-#include "Sprite.h"
-#include "DirectMath.h"
 #include <algorithm>
-#include "Melon.h"
-#include "Pyramid.h"
-#include "Surface.h"
-#include "Sheet.h"
+#include "DirectMath.h"
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
+#include <vld.h>
 
 GDIPlusManager gdipm;
 namespace dx = DirectX;
 
 App::App()
 	:
-	wnd(1200, 800, "Modular Engine")
-{
-	class Factory
-	{
-	public:
-		Factory(Graphics& gfx)
-			:
-			gfx(gfx)
-		{}
-		std::unique_ptr<Drawable> operator()()
-		{
-			switch (typedist(rng))
-			{
-			case 0:
-				return std::make_unique<Pyramid>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			case 1:
-				return std::make_unique<SkinnedBox>(
-					gfx, rng, adist, ddist,
-					odist, rdist);
-			case 2:
-				return std::make_unique<Melon>(
-					gfx, rng, adist, ddist,
-					odist, rdist, longdist, latdist
-					);
-			case 3:
-				return std::make_unique<Sheet>(
-					gfx, rng, adist, ddist,
-					odist, rdist
-					);
-			default:
-				assert(false && "bad drawable type in factory");
-				return {};
-			}
-		}
-	private:
-		Graphics& gfx;
-		std::mt19937 rng{ std::random_device{}() };
-		std::uniform_real_distribution<float> adist{ 0.0f,PI * 2.0f };
-		std::uniform_real_distribution<float> ddist{ 0.0f,PI * 0.5f };
-		std::uniform_real_distribution<float> odist{ 0.0f,PI * 0.08f };
-		std::uniform_real_distribution<float> rdist{ 6.0f,20.0f };
-		std::uniform_real_distribution<float> bdist{ 0.4f,3.0f };
-		std::uniform_int_distribution<int> latdist{ 5,20 };
-		std::uniform_int_distribution<int> longdist{ 10,40 };
-		std::uniform_int_distribution<int> typedist{ 0,3 };
-	};
-
-	Factory f(wnd.Gfx());
-	drawables.reserve(nDrawables);
-	std::generate_n(std::back_inserter(drawables), nDrawables, f);
+	wnd(1200, 800, "Modular Engine"),
+	light(wnd.Gfx())
+{	
+	wnd.EnableCursor();
+	wnd.mouse.DisableRaw();
 
 	wnd.Gfx().SetProjection(dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
-	//wnd.Gfx().SetCamera(dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f));
 	//sprites.push_back(std::make_unique<Sprite>(100, 100, wnd.Gfx(), "Test.png"));
 }
 
@@ -81,28 +26,87 @@ void App::DoFrame()
 
 	wnd.Gfx().BeginFrame(0.07f, 0.0f, 0.12f);
 	wnd.Gfx().SetCamera(cam.GetMatrix());
+	light.Bind(wnd.Gfx(), cam.GetMatrix());
 
-	for (auto& d : drawables)
+	nanosuit.Draw(wnd.Gfx());
+	light.Draw(wnd.Gfx());
+
+	while (const auto e = wnd.kbd.ReadKey())
 	{
-		d->Update(wnd.kbd.KeyIsPressed(VK_SPACE) ? 0.0f : dt);
-		d->Draw(wnd.Gfx());
+		if (e->IsPress() && e->GetCode() == VK_INSERT)
+		{
+			if (wnd.CursorEnabled())
+			{
+				wnd.DisableCursor();
+				wnd.mouse.EnableRaw();
+			}
+			else
+			{
+				wnd.EnableCursor();
+				wnd.mouse.DisableRaw();
+			}
+		}
 	}
 
-	if (ImGui::Begin("Simulation Speed"))
+	if (!wnd.CursorEnabled())
 	{
-		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 4.0f);
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		if (wnd.kbd.KeyIsPressed('W'))
+		{
+			cam.Translate({ 0.0f,0.0f,dt });
+		}
+		if (wnd.kbd.KeyIsPressed('A'))
+		{
+			cam.Translate({ -dt,0.0f,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('S'))
+		{
+			cam.Translate({ 0.0f,0.0f,-dt });
+		}
+		if (wnd.kbd.KeyIsPressed('D'))
+		{
+			cam.Translate({ dt,0.0f,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('R'))
+		{
+			cam.Translate({ 0.0f,dt,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('F'))
+		{
+			cam.Translate({ 0.0f,-dt,0.0f });
+		}
 	}
-	ImGui::End();
-	cam.SpawnControlWindow();
 
+	while (const auto delta = wnd.mouse.ReadRawDelta())
+	{
+		if (!wnd.CursorEnabled())
+		{
+			cam.Rotate((float)delta->x, (float)delta->y);
+		}
+	}
+
+	SpawnSimulationWindow();
+	light.SpawnControlWindow();
+	nanosuit.ShowWindow();
+	
 	//present
 	wnd.Gfx().EndFrame();
 }
 
+void App::SpawnSimulationWindow() noexcept
+{
+	if (ImGui::Begin("Simulation Speed"))
+	{
+		ImGui::SliderFloat("Speed Factor", &speed_factor, 0.0f, 6.0f, "%.4f", ImGuiSliderFlags_::ImGuiSliderFlags_Logarithmic);
+		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Text("Status: %s", wnd.kbd.KeyIsPressed(VK_SPACE) ? "PAUSED" : "RUNNING (hold spacebar to pause)");
+	}
+	ImGui::End();
+}
 
 App::~App()
-{}
+{
+	wnd.Gfx().ReleaseDevice();
+}
 
 int App::Go()
 {
@@ -117,22 +121,3 @@ int App::Go()
 		DoFrame();
 	}
 }
-
-/*void App::DoFrame()
-{
-	const float c = sin(timer.Peek()) / 2.0f + 0.5f;
-	wnd.Gfx().ClearBuffer(1.0f, c, 1.0f);
-	wnd.Gfx().DrawTestTriangle(
-		-timer.Peek(),
-		0.0f,
-		0.0f
-	);
-	wnd.Gfx().DrawTestTriangle(
-		timer.Peek(),
-		0,
-		0
-		/*wnd.mouse.GetPosX() / 1200.0f - 1.0f,
-		-wnd.mouse.GetPosY() / 800.0f + 1.0f
-	);
-	wnd.Gfx().EndFrame();
-}*/

@@ -7,6 +7,7 @@
 #include <WICTextureLoader.h>
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
+#include "Macros.h"
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
@@ -14,11 +15,11 @@ namespace dx = DirectX;
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-Graphics::Graphics(HWND hWnd)
+Graphics::Graphics(HWND hWnd, int width, int height)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
-	sd.BufferDesc.Width = 0;
-	sd.BufferDesc.Height = 0;
+	sd.BufferDesc.Width = width;
+	sd.BufferDesc.Height = height;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 0;
 	sd.BufferDesc.RefreshRate.Denominator = 0;
@@ -62,22 +63,22 @@ Graphics::Graphics(HWND hWnd)
 	
 	//initialize rasterizer or configure viewport
 	D3D11_VIEWPORT vp;
-	vp.Width = 1200;
-	vp.Height = 800;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
 
-	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	/*D3D11_RASTERIZER_DESC rasterizerDesc = {};
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_BACK;
 	//create rasterizer state
 	GFX_THROW_INFO(this->pDevice->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf()));
 
 	//bind it to pipeline
-	this->pContext->RSSetState(this->rasterizerState.Get());
+	this->pContext->RSSetState(this->rasterizerState.Get());*/
 
 	//create depth stencil state (z buffer)
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
@@ -92,8 +93,8 @@ Graphics::Graphics(HWND hWnd)
 	//create depth stencil texture
 	wrl::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 1200u;
-	descDepth.Height = 800u;
+	descDepth.Width = width;
+	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -131,6 +132,16 @@ Graphics::Graphics(HWND hWnd)
 	
 	//init imgui d3d impl
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+}
+
+void Graphics::ReleaseDevice() const noexcept
+{
+	pSwap.~ComPtr();
+	pTarget.~ComPtr();
+	pDSV.~ComPtr();
+	pContext.~ComPtr();
+	pDevice.~ComPtr();
+	ImGui_ImplDX11_Shutdown();
 }
 
 void Graphics::EndFrame()
@@ -189,14 +200,8 @@ Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> Graphics::LoadTexture(std::stri
 {
 	HRESULT hr;
 	wrl::ComPtr<ID3D11ShaderResourceView> thej;
-	char buffer[MAX_PATH];
-	GetModuleFileNameA(NULL, buffer, MAX_PATH);
-	std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-	std::string string_buffer = std::string(buffer).substr(0, pos);
 
-	string_buffer += "\\";
-
-	GFX_THROW_INFO(DirectX::CreateWICTextureFromFile(pDevice.Get(), StringConverter::StringToWide(std::string(string_buffer + "Assets\\Textures\\" + assetName)).c_str(), nullptr, thej.GetAddressOf()));
+	GFX_THROW_INFO(DirectX::CreateWICTextureFromFile(pDevice.Get(), StringConverter::StringToWide(std::string(cwd + "Assets\\Textures\\" + assetName)).c_str(), nullptr, thej.GetAddressOf()));
 	return thej;
 }
 

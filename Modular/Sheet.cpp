@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Sampler.h"
 #include "StringConverter.h"
+#include "Macros.h"
 
 Sheet::Sheet(Graphics& gfx,
 	std::mt19937& rng,
@@ -44,27 +45,20 @@ Sheet::Sheet(Graphics& gfx,
 		model.vertices[2].tex = { 0.0f,1.0f };
 		model.vertices[3].tex = { 1.0f,1.0f };
 
-		char buffer[MAX_PATH];
-		GetModuleFileNameA(NULL, buffer, MAX_PATH);
-		std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-		std::string string_buffer = std::string(buffer).substr(0, pos);
-
-		string_buffer += "\\";
-
-		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(std::string(string_buffer + "Assets\\Textures\\Test.png"))));
+		AddStaticBind(std::make_unique<Texture>(gfx, Surface::FromFile(std::string(cwd + "Assets\\Textures\\Test.png"))));
 
 		AddStaticBind(std::make_unique<VertexBuffer>(gfx, model.vertices));
 
 		AddStaticBind(std::make_unique<Sampler>(gfx));
 
-		std::string vert = string_buffer;
+		std::string vert = cwd;
 		vert += "TextureVS.cso";
 
 		auto pvs = std::make_unique<VertexShader>(gfx, StringConverter::StringToWide(vert));
 		auto pvsbc = pvs->GetBytecode();
 		AddStaticBind(std::move(pvs));
 
-		std::string pix = string_buffer;
+		std::string pix = cwd;
 		pix += "TexturePS.cso";
 
 		AddStaticBind(std::make_unique<PixelShader>(gfx, StringConverter::StringToWide(pix)));

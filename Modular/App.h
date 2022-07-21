@@ -4,6 +4,10 @@
 #include "Macros.h"
 #include "ImguiManager.h"
 #include "Camera.h"
+#include "PointLight.h"
+#include "LuaEmbed.h"
+#include <set>
+#include "Mesh.h"
 
 class App
 {
@@ -14,12 +18,17 @@ public:
 	~App();
 private:
 	void DoFrame();
+	void SpawnSimulationWindow() noexcept;
+public:
+	LuaEmbed lua;
 private:
+	int x = 0, y = 0;
 	ImguiManager imgui;
 	Window wnd;
 	Camera cam;
+	PointLight light;
 	DirTimer timer;
-	std::vector<std::unique_ptr<class Drawable>> drawables;
-	static constexpr size_t nDrawables = 180;
+	Model nanosuit{wnd.Gfx(), "Nanosuit.gltf"};
+	//Model scottCawthon{ wnd.Gfx(), "Scott.gltf" };
 	float speed_factor = 1.0f;
 };
