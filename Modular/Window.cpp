@@ -3,7 +3,9 @@
 #include "resource.h"
 #include "WindowsThrowMacros.h"
 #include "WindowsMessageMap.h"
+#include "CustomMessages.h"
 #include "imgui/imgui_impl_win32.h"
+#include "App.h"
 
 // Window Class Stuff
 Window::WindowClass Window::WindowClass::wndClass;
@@ -81,6 +83,7 @@ Window::Window(int width, int height, const char* name)
 	}
 	// newly created windows start off as hidden
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+	eventSys.Push_Event(EventSystem::Events::WINDOW_CREATED);
 	//Init ImGui Win32 Impl
 	ImGui_ImplWin32_Init(hWnd);
 	// create graphics object
@@ -259,6 +262,14 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 			}
 		}
 		break;
+	case LUA_EVENTX:
+	case ON_UPDATEX:
+	case CUSTOM_EVENTX:
+	case WINDOW_CREATEDX:
+	{
+		App::HandleExternalMessage(hWnd, msg, wParam, lParam);
+		break;
+	}
 		/*********** KEYBOARD MESSAGES ***********/
 	case WM_KEYDOWN:
 		// syskey commands need to be handled to track ALT key (VK_MENU) and F10

@@ -3,6 +3,7 @@
 #include "DirectMath.h"
 #include "GDIPlusManager.h"
 #include "imgui/imgui.h"
+#include "CustomMessages.h"
 #include <vld.h>
 
 GDIPlusManager gdipm;
@@ -20,6 +21,21 @@ App::App()
 	//sprites.push_back(std::make_unique<Sprite>(100, 100, wnd.Gfx(), "Test.png"));
 }
 
+void App::HandleExternalMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case LUA_EVENTX:
+		break;
+	case ON_UPDATEX:
+		break;
+	case CUSTOM_EVENTX:
+		break;
+	case WINDOW_CREATEDX:
+		break;
+	}
+}
+
 void App::DoFrame()
 {
 	auto dt = timer.Mark() * speed_factor;
@@ -30,6 +46,8 @@ void App::DoFrame()
 
 	nanosuit.Draw(wnd.Gfx());
 	light.Draw(wnd.Gfx());
+
+	wnd.eventSys.Push_Event(EventSystem::Events::ON_UPDATE);
 
 	while (const auto e = wnd.kbd.ReadKey())
 	{

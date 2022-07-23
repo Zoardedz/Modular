@@ -16,6 +16,7 @@ public:
 	// master frame / message loop
 	int Go();
 	~App();
+	static void HandleExternalMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 private:
 	void DoFrame();
 	void SpawnSimulationWindow() noexcept;

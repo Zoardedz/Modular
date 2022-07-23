@@ -263,6 +263,7 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DxgiInfoManager.cpp" />
+    <ClCompile Include="EventSystem.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="ImguiManager.cpp" />
@@ -323,6 +324,7 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClInclude Include="Cone.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="CustomMessages.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="DirectException.h" />
     <ClInclude Include="DirectMath.h" />
@@ -330,6 +332,7 @@ xcopy /y /s "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     <ClInclude Include="DrawableBase.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxgiInfoManager.h" />
+    <ClInclude Include="EventSystem.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsThrowMacros.h" />

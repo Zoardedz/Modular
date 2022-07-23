@@ -6,6 +6,7 @@
 #include "Graphics.h"
 #include <optional>
 #include <memory>
+#include "EventSystem.h"
 
 class Window
 {
@@ -73,6 +74,7 @@ private:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	EventSystem eventSys;
 private:
 	bool cursorEnabled = false;
 	int width;

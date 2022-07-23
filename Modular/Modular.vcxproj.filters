@@ -37,6 +37,12 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{85f8f400-80c1-44f6-a0f8-192f866244f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\EventSystem">
+      <UniqueIdentifier>{be3c9714-5ac3-45ba-b2dd-0adb7d7e901b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EventSystem">
+      <UniqueIdentifier>{0d18cfee-1932-4645-b493-3cd37fc98c4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -173,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EventSystem.cpp">
+      <Filter>Source Files\EventSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -364,6 +373,12 @@
     </ClInclude>
     <ClInclude Include="ConditionalNoexcept.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EventSystem.h">
+      <Filter>Header Files\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomMessages.h">
+      <Filter>Header Files\EventSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
