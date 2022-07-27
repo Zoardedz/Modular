@@ -29,7 +29,7 @@ private:
 	Camera cam;
 	PointLight light;
 	DirTimer timer;
-	Model nanosuit{wnd.Gfx(), "Nanosuit.gltf"};
+	Model nanosuit{wnd.Gfx(), "nano_textured\\nanosuit.obj"};
 	//Model scottCawthon{ wnd.Gfx(), "Scott.gltf" };
 	float speed_factor = 1.0f;
 };
